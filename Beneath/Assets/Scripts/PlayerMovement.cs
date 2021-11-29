@@ -15,6 +15,7 @@ public class PlayerMovement : MonoBehaviour
     private float horizontalInput;
     private Vector2 lastPosition;
     public Transform background;
+    private bool canJumpAgain = true;
     // Start is called before the first frame update
 
     private void Awake()
@@ -36,7 +37,12 @@ public class PlayerMovement : MonoBehaviour
 
         if (isGrounded())
         {
+            canJumpAgain = true;
             lastPosition = new Vector2(body.transform.position.x, body.transform.position.y);
+        }
+        if (onWall())
+        {
+            canJumpAgain = true;
         }
 
         horizontalInput = Input.GetAxis("Horizontal");
@@ -55,7 +61,9 @@ public class PlayerMovement : MonoBehaviour
         anim.SetBool("run", horizontalInput != 0);
         anim.SetBool("grounded", isGrounded());
 
-        if (wallJumpCooldown > .2f)
+       
+
+        if (wallJumpCooldown > .2f )
         {
             body.velocity = new Vector2(horizontalInput * runningSpeed, body.velocity.y);
 
@@ -78,6 +86,7 @@ public class PlayerMovement : MonoBehaviour
         {
             wallJumpCooldown += Time.deltaTime;
         }
+
     }
 
     private void Jump()
@@ -86,6 +95,12 @@ public class PlayerMovement : MonoBehaviour
             body.velocity = new Vector2(body.velocity.x, jumpSpeed);
             anim.SetTrigger("jump");
             
+        }
+        if (canJumpAgain && !isGrounded() && !onWall())
+        {
+            canJumpAgain = false;
+            body.velocity = new Vector2(body.velocity.x, jumpSpeed);
+            anim.SetTrigger("jump");
         }
         else if (onWall() && !isGrounded())
         {
