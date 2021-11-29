@@ -13,7 +13,7 @@ public class PlayerMovement : MonoBehaviour
     private BoxCollider2D boxCollider;
     private float wallJumpCooldown;
     private float horizontalInput;
-    private Vector2 lastPosition;
+    private Vector2 lastPosition = new Vector2(0, -1.78f);
     public Transform background;
     private bool canJumpAgain = true;
     // Start is called before the first frame update
@@ -38,7 +38,7 @@ public class PlayerMovement : MonoBehaviour
         if (isGrounded())
         {
             canJumpAgain = true;
-            lastPosition = new Vector2(body.transform.position.x, body.transform.position.y);
+            //lastPosition = new Vector2(body.transform.position.x, body.transform.position.y);
         }
         if (onWall())
         {
@@ -135,12 +135,16 @@ public class PlayerMovement : MonoBehaviour
         if (collision.tag=="Respawn")
         {
             float deathPause = 0;
-            while (deathPause < 5f)
+            /*while (deathPause < 5f)
             {
                 deathPause += Time.deltaTime;
-            }
+            }*/
             body.transform.position = lastPosition;
             body.velocity = new Vector2(0, 0);
+        }
+        else if(collision.tag == "Checkpoint")
+        {
+            lastPosition = new Vector2(collision.transform.position.x, collision.transform.position.y+.9f);
         }
     }
 

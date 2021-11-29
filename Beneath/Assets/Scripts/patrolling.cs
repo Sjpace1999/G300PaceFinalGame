@@ -21,6 +21,5 @@ public class patrolling : MonoBehaviour
         {
             x = (x + 1) % positions.Length;
         }
-        Debug.Log(x);
     }
 }
