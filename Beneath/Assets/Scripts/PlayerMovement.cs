@@ -14,6 +14,7 @@ public class PlayerMovement : MonoBehaviour
     private float wallJumpCooldown;
     private float horizontalInput;
     private Vector2 lastPosition;
+    public Transform background;
     // Start is called before the first frame update
 
     private void Awake()
@@ -31,6 +32,8 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        background.position = new Vector2(body.transform.position.x,body.transform.position.y + 1f);
+
         if (isGrounded())
         {
             lastPosition = new Vector2(body.transform.position.x, body.transform.position.y);
@@ -46,7 +49,8 @@ public class PlayerMovement : MonoBehaviour
         else if(horizontalInput < 0)
         {
             transform.localScale = new Vector3(-1, 1, 1);
-        }        
+        }
+        
 
         anim.SetBool("run", horizontalInput != 0);
         anim.SetBool("grounded", isGrounded());
@@ -105,7 +109,6 @@ public class PlayerMovement : MonoBehaviour
     {
         if (collision.collider.gameObject.layer == 10)
         {
-            
             body.transform.position = lastPosition;
             body.velocity = new Vector2(0, 0);
         }
@@ -116,7 +119,11 @@ public class PlayerMovement : MonoBehaviour
     {
         if (collision.tag=="Respawn")
         {
-
+            float deathPause = 0;
+            while (deathPause < 5f)
+            {
+                deathPause += Time.deltaTime;
+            }
             body.transform.position = lastPosition;
             body.velocity = new Vector2(0, 0);
         }
