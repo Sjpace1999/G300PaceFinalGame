@@ -16,6 +16,8 @@ public class PlayerMovement : MonoBehaviour
     private Vector2 lastPosition = new Vector2(0, -1.78f);
     public Transform background;
     private bool canJumpAgain = true;
+    public AudioSource hit;
+    public float deathPause=0;
     // Start is called before the first frame update
 
     private void Awake()
@@ -23,70 +25,80 @@ public class PlayerMovement : MonoBehaviour
         body = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         boxCollider = GetComponent<BoxCollider2D>();
+        hit = GetComponent<AudioSource>();
     }
 
     void Start()
     {
-        
+       
     }
 
     // Update is called once per frame
     void Update()
     {
-        background.position = new Vector2(body.transform.position.x,body.transform.position.y + 1f);
+        background.position = new Vector2(body.transform.position.x, body.transform.position.y + 1f);
 
-        if (isGrounded())
+
+        if (deathPause > .5f)
         {
-            canJumpAgain = true;
-            //lastPosition = new Vector2(body.transform.position.x, body.transform.position.y);
-        }
-        if (onWall())
-        {
-            canJumpAgain = true;
-        }
-
-        horizontalInput = Input.GetAxis("Horizontal");
-        
-
-        if (horizontalInput> 0)
-        {
-            transform.localScale = Vector3.one;
-        }
-        else if(horizontalInput < 0)
-        {
-            transform.localScale = new Vector3(-1, 1, 1);
-        }
-        
-
-        anim.SetBool("run", horizontalInput != 0);
-        anim.SetBool("grounded", isGrounded());
-
-       
-
-        if (wallJumpCooldown > .2f )
-        {
-            body.velocity = new Vector2(horizontalInput * runningSpeed, body.velocity.y);
-
-            if (onWall() && !isGrounded() && horizontalInput !=0)
+            if (isGrounded())
             {
-                body.gravityScale = 1;
-                body.velocity = new Vector2(0, -1);
+                canJumpAgain = true;
+                //lastPosition = new Vector2(body.transform.position.x, body.transform.position.y);
+            }
+            if (onWall())
+            {
+                canJumpAgain = true;
+            }
+
+            horizontalInput = Input.GetAxis("Horizontal");
+
+
+            if (horizontalInput > 0)
+            {
+                transform.localScale = Vector3.one;
+            }
+            else if (horizontalInput < 0)
+            {
+                transform.localScale = new Vector3(-1, 1, 1);
+            }
+
+
+            anim.SetBool("run", horizontalInput != 0);
+            anim.SetBool("grounded", isGrounded());
+
+
+
+            if (wallJumpCooldown > .2f)
+            {
+                body.velocity = new Vector2(horizontalInput * runningSpeed, body.velocity.y);
+
+                if (onWall() && !isGrounded() && horizontalInput != 0)
+                {
+                    body.gravityScale = 1;
+                    body.velocity = new Vector2(0, -1);
+                }
+                else
+                {
+                    body.gravityScale = 7f;
+                }
+
+                if (Input.GetKeyDown(KeyCode.Space))
+                {
+                    Jump();
+                }
             }
             else
             {
-                body.gravityScale = 7f;
-            }
-
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                Jump();
+                wallJumpCooldown += Time.deltaTime;
             }
         }
         else
         {
-            wallJumpCooldown += Time.deltaTime;
+            anim.SetBool("run", false);
+            anim.SetBool("grounded", true);
+            deathPause += Time.deltaTime;
         }
-
     }
 
     private void Jump()
@@ -124,6 +136,8 @@ public class PlayerMovement : MonoBehaviour
     {
         if (collision.collider.gameObject.layer == 10)
         {
+            deathPause = 0;
+            hit.PlayOneShot(hit.clip);
             body.transform.position = lastPosition;
             body.velocity = new Vector2(0, 0);
         }
@@ -134,11 +148,12 @@ public class PlayerMovement : MonoBehaviour
     {
         if (collision.tag=="Respawn")
         {
-            float deathPause = 0;
+            deathPause = 0;
             /*while (deathPause < 5f)
             {
                 deathPause += Time.deltaTime;
             }*/
+            hit.PlayOneShot(hit.clip);
             body.transform.position = lastPosition;
             body.velocity = new Vector2(0, 0);
         }

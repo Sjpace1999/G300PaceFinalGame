@@ -75,7 +75,7 @@ public class RandomMusic : MonoBehaviour
             StopAllCoroutines();
             timer = 0f;
             mixer.SetFloat(exposedParamName, - 80);
-            StartCoroutine(FadeMasterGroup(fadeInDuration, 1));
+            StartCoroutine(FadeMasterGroup(fadeInDuration, .1f));
             if (randomiseStartPosition)
             {
                 bed.time = Random.Range(0, bed.clip.length);
