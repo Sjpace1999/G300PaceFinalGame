@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -18,6 +20,8 @@ public class PlayerMovement : MonoBehaviour
     private bool canJumpAgain = true;
     public AudioSource hit;
     public float deathPause=0;
+    public float instructionsTimer;
+    public TextMeshProUGUI instructions;
     // Start is called before the first frame update
 
     private void Awake()
@@ -36,6 +40,14 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (instructionsTimer > 5f)
+        {
+            instructions.enabled = false;
+        }
+        else
+        {
+            instructionsTimer += Time.deltaTime;
+        }
         background.position = new Vector2(body.transform.position.x, body.transform.position.y + 1f);
 
 
