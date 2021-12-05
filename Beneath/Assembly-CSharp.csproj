@@ -53,8 +53,9 @@
     <UnityVersion>2020.3.13f1</UnityVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\PlayerMovement.cs" />
     <Compile Include="Assets\Scripts\patrolling.cs" />
+    <Compile Include="Assets\Scripts\PlayerMovement.cs" />
+    <Compile Include="Assets\EndlessCaveAmbience\Scripts\RandomMusic.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Sprites\Character\Read Me.txt" />
