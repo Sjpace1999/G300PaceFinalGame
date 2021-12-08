@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class PlayerMovement : MonoBehaviour
@@ -22,6 +23,8 @@ public class PlayerMovement : MonoBehaviour
     public float deathPause=0;
     public float instructionsTimer;
     public TextMeshProUGUI instructions;
+    public CanvasGroup cg;
+    private bool endGame = false;
     // Start is called before the first frame update
 
     private void Awake()
@@ -40,6 +43,15 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (endGame)
+        {
+            cg.alpha += Time.deltaTime / 5;
+            if(cg.alpha == 1)
+            {
+                SceneManager.LoadScene("Level");
+            }
+        }
+
         if (instructionsTimer > 5f)
         {
             instructions.enabled = false;
@@ -172,6 +184,10 @@ public class PlayerMovement : MonoBehaviour
         else if(collision.tag == "Checkpoint")
         {
             lastPosition = new Vector2(collision.transform.position.x, collision.transform.position.y+.9f);
+        }
+        else if (collision.tag == "Finish")
+        {
+            endGame = true;
         }
     }
 
